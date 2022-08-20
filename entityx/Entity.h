@@ -242,6 +242,8 @@ struct BaseComponent {
   void operator delete(void *p) { fail(); }
   void operator delete[](void *p) { fail(); }
 
+  virtual std::string serializeName() const = 0;
+  virtual void internal_serialize(bool save, void *ar) = 0;
 
  protected:
   static void fail() {
@@ -341,6 +343,7 @@ public:
   virtual ~BaseComponentHelper() {}
   virtual void remove_component(Entity e) = 0;
   virtual void copy_component_to(Entity source, Entity target) = 0;
+  virtual BaseComponent *get_component(Entity e) = 0;
 };
 
 template <typename C>
@@ -351,6 +354,9 @@ public:
   }
   void copy_component_to(Entity source, Entity target) override {
     target.assign_from_copy<C>(*(source.component<C>().get()));
+  }
+  BaseComponent *get_component(Entity e) override {
+    return e.component<C>().get();
   }
 };
 
@@ -836,6 +842,19 @@ class EntityManager : entityx::help::NonCopyable {
   template <typename C>
   static BaseComponent::Family component_family() {
     return Component<typename std::remove_const<C>::type>::family();
+  }
+
+  template<class Serializer>
+  void serialize(Entity entity, Serializer serializer) {
+    assert(entity.valid());
+    auto mask = entity.component_mask();
+    for (size_t i = 0; i < component_helpers_.size(); i++) {
+      BaseComponentHelper *helper = component_helpers_[i];
+      if (helper && mask.test(i)) {
+        auto c = helper->get_component(entity);
+        serializer(c);
+      }
+    }
   }
 
  private:
