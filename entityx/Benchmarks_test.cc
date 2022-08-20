@@ -33,8 +33,8 @@ struct Listener : public Receiver<Listener> {
   void receive(const EntityCreatedEvent &event) { ++created; }
   void receive(const EntityDestroyedEvent &event) { ++destroyed; }
 
-  int created = 0;
-  int destroyed = 0;
+  long unsigned int created = 0;
+  long unsigned int destroyed = 0;
 };
 
 struct Position : public Component<Position> {
@@ -84,13 +84,13 @@ TEST_CASE_METHOD(BenchmarkFixture, "TestCreateEntitiesWithListener") {
   Listener listen;
   ev.subscribe<EntityCreatedEvent>(listen);
 
-  int count = 10000000L;
+  long unsigned int count = 10000000L;
 
   AutoTimer t;
   cout << "creating " << count << " entities while notifying a single EntityCreatedEvent listener" << endl;
 
   vector<Entity> entities;
-  for (int i = 0; i < count; i++) {
+  for (long unsigned int i = 0; i < count; i++) {
     entities.push_back(em.create());
   }
 
@@ -99,9 +99,9 @@ TEST_CASE_METHOD(BenchmarkFixture, "TestCreateEntitiesWithListener") {
 }
 
 TEST_CASE_METHOD(BenchmarkFixture, "TestDestroyEntitiesWithListener") {
-  int count = 10000000;
+  long unsigned int count = 10000000;
   vector<Entity> entities;
-  for (int i = 0; i < count; i++) {
+  for (long unsigned int i = 0; i < count; i++) {
     entities.push_back(em.create());
   }
 
@@ -120,8 +120,8 @@ TEST_CASE_METHOD(BenchmarkFixture, "TestDestroyEntitiesWithListener") {
 }
 
 TEST_CASE_METHOD(BenchmarkFixture, "TestEntityIteration") {
-  int count = 10000000;
-  for (int i = 0; i < count; i++) {
+  long unsigned int count = 10000000;
+  for (long unsigned int i = 0; i < count; i++) {
     auto e = em.create();
     e.assign<Position>();
   }
@@ -136,8 +136,8 @@ TEST_CASE_METHOD(BenchmarkFixture, "TestEntityIteration") {
 }
 
 TEST_CASE_METHOD(BenchmarkFixture, "TestEntityIterationUnpackTwo") {
-  int count = 10000000;
-  for (int i = 0; i < count; i++) {
+  long unsigned int count = 10000000;
+  for (long unsigned int i = 0; i < count; i++) {
     auto e = em.create();
     e.assign<Position>();
     e.assign<Direction>();

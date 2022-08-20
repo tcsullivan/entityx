@@ -371,7 +371,7 @@ class EntityManager : entityx::help::NonCopyable {
    public:
     using iterator_category = std::input_iterator_tag;
     using value_type = Entity::Id;
-    using difference_type = Entity::Id;
+    using difference_type = int;
     using pointer = const Entity::Id*;
     using reference = const Entity::Id&;
 
