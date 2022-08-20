@@ -367,8 +367,14 @@ class EntityManager : entityx::help::NonCopyable {
   /// An iterator over a view of the entities in an EntityManager.
   /// If All is true it will iterate over all valid entities and will ignore the entity mask.
   template <class Delegate, bool All = false>
-  class ViewIterator : public std::iterator<std::input_iterator_tag, Entity::Id> {
+  class ViewIterator /*: public std::iterator<std::input_iterator_tag, Entity::Id>*/ {
    public:
+    using iterator_category = std::input_iterator_tag;
+    using value_type = Entity::Id;
+    using difference_type = Entity::Id;
+    using pointer = const Entity::Id*;
+    using reference = const Entity::Id&;
+
     Delegate &operator ++() {
       ++i_;
       next();
